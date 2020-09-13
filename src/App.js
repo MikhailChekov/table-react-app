@@ -1,25 +1,12 @@
 import React, {Component} from 'react';
-import Table from 'react-bootstrap/Table';
+import Table from './components/Table/Table';
 import Loader from './components/Loader';
-import sizeSelector from './components/SizeSelector';
 import SearchFilter from './components/SearchFilter';
-
-
-import 'bootstrap/dist/css/bootstrap.min.css';
 import SizeSelector from './components/SizeSelector';
+import compareValues from './components/compareValues';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-const LONG_REQ = 'https://cors-anywhere.herokuapp.com/http://www.filltext.com/?rows=1000&id={number|1000}&firstName={firstName}&delay=3&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}';
-const SHORT_REQ = 'https://cors-anywhere.herokuapp.com/http://www.filltext.com/?rows=32&id={number|1000}&firstName={firstName}&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}';
-const options = [
-  {
-    value: 'short',
-    label: 'Короткий вариант (32 значения)'
-  },
-  {
-    value: 'long',
-    label: 'Длинный вариант (1000 значений)'
-  }
-]
+import { LONG_REQ, SHORT_REQ, SELECT_OPT } from './constants.js';
 
 
 class App extends Component {
@@ -28,9 +15,11 @@ class App extends Component {
     isSizeSelected: false,
     searchQuery: '',
     selectValue: 'short',
+    sortType: 'disabled',
+    sortRow: '',
     data: [],
   };
-
+  
   async fetchData (searchQuery) {
      try{
         const response = await fetch(
@@ -42,15 +31,26 @@ class App extends Component {
           });
         const data = await response.json();
         this.setState({data: data, isLoading: false});
-        this.setData(data);
      }
      catch(e){
       console.log(`Error! ${e}`);
      }
   }
 
-  setData = (result) => {
-    console.log(result);
+  handleSort = (sortRow) => {
+    const dataCopy = this.state.data.concat();
+    const lastSortRow = this.state.sortRow.concat();
+    let sortType = '';
+
+    if(lastSortRow !== sortRow){
+      sortType = 'asc';
+    }else{
+      sortType = this.state.sortType ===  'asc' ? 'desc' : 'asc';
+    }
+    // use external func for sorting
+    dataCopy.sort(compareValues(sortRow, sortType));
+
+    this.setState({data: dataCopy, sortType: sortType, sortRow: sortRow});
   }
 
   handleSelectOnSubmit = (e) => {
@@ -74,19 +74,21 @@ class App extends Component {
     this.setState({selectValue: value});
   }
 
-  
+  showColumnData = (column) => {
+    console.log(column);
+  }
 
   // handleFilter = (query) =>{
   //   this.setState({searchQuery: query});
   // }
 
   render(){
-    const { isSizeSelected, isLoading, selectValue} = this.state;
+    const { isSizeSelected, isLoading, selectValue, data, sortType, sortRow} = this.state;
     
     if(!isSizeSelected){
       return (
         <SizeSelector 
-          options={options} 
+          options={SELECT_OPT} 
           handleSelectOnSubmit={this.handleSelectOnSubmit} 
           handleSelectOnChange={this.handleSelectOnChange}
           selectValue={selectValue}
@@ -100,26 +102,13 @@ class App extends Component {
           <Loader/> :
           <>
             <SearchFilter handleFilter={this.handleFilter} />
-            <Table striped bordered hover variant="dark">
-              <thead>
-                <tr>
-                  <th>Id</th>
-                  <th>First Name</th>
-                  <th>Last Name</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Id</td>
-                  <td>First</td>
-                  <td>Last</td>
-                  <td>@mEmaildo</td>
-                  <td>+Phone</td>
-                </tr>
-              </tbody>
-            </Table>
+            <Table 
+              data={data} 
+              sortType={sortType} 
+              sortRow={sortRow} 
+              handleSort={this.handleSort} 
+              showColumnData={this.showColumnData}
+            />
           </>
         }
       </>
@@ -128,3 +117,4 @@ class App extends Component {
 }
 
 export default App;
+

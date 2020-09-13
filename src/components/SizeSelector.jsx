@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
         <Form className="text-center">
             <Form.Group>
                 <Form.Label>Выберите объем данных:</Form.Label>
-                <Form.Control size="sm" onChange={handleSelectOnChange} defaultValue={selectValue} as="select"  >
+                <Form.Control className="mx-auto" size="sm" onChange={handleSelectOnChange} defaultValue={selectValue} as="select"  >
                     {options.map(({value, label} ,i ) =>
                         <option key={i} value={value}>{label}</option>
                     )}
