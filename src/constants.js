@@ -14,5 +14,5 @@ const SELECT_OPT = [
 export {
     LONG_REQ,
     SHORT_REQ,
-    SELECT_OPT
+    SELECT_OPT,
 }

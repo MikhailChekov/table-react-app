@@ -3,7 +3,11 @@ import Table from './components/Table/Table';
 import Loader from './components/Loader';
 import SearchFilter from './components/SearchFilter';
 import SizeSelector from './components/SizeSelector';
-import compareValues from './components/compareValues';
+import UserInfo from './components/UserInfo';
+
+//sort high order function
+import compareValues from './compareValues';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { LONG_REQ, SHORT_REQ, SELECT_OPT } from './constants.js';
@@ -13,10 +17,12 @@ class App extends Component {
   state = {
     isLoading: false,
     isSizeSelected: false,
+    choisedUser: null,
     searchQuery: '',
-    selectValue: 'short',
+    selectedSize: 'short',
     sortType: 'disabled',
     sortRow: '',
+    
     data: [],
   };
   
@@ -38,27 +44,29 @@ class App extends Component {
   }
 
   handleSort = (sortRow) => {
-    const dataCopy = this.state.data.concat();
+    // make copy data
+    const data = this.state.data.concat();
     const lastSortRow = this.state.sortRow.concat();
     let sortType = '';
-
+    
+    // sort should start with 'asc' for new row
     if(lastSortRow !== sortRow){
       sortType = 'asc';
     }else{
       sortType = this.state.sortType ===  'asc' ? 'desc' : 'asc';
     }
-    // use external func for sorting
-    dataCopy.sort(compareValues(sortRow, sortType));
+    // use external function for sorting
+    data.sort(compareValues(sortRow, sortType));
 
-    this.setState({data: dataCopy, sortType: sortType, sortRow: sortRow});
+    this.setState({data, sortType, sortRow});
   }
 
   handleSelectOnSubmit = (e) => {
-    const { selectValue } = this.state;
+    const { selectedSize } = this.state;
     e.preventDefault();
     this.setState({isSizeSelected: true, isLoading: true});
 
-    switch(selectValue){
+    switch(selectedSize){
       case 'short': 
         this.fetchData(SHORT_REQ);
         break;
@@ -71,19 +79,50 @@ class App extends Component {
   }
 
   handleSelectOnChange = ({target: {value}}) => {
-    this.setState({selectValue: value});
+    this.setState({selectedSize: value});
   }
 
-  showColumnData = (column) => {
-    console.log(column);
+  // TODO:
+  handleSearchOnClick = () =>{
+
+    if(this.state.searchQuery !== ''){
+      const data = this.state.data.concat();
+      const { searchQuery } = this.state;
+      data.filter((item) => {
+        let query = searchQuery.toLowerCase();
+
+        return (item.id === query) || 
+        (item.firstName.toLowerCase() === query) ||
+        (item.lastName.toLowerCase() === query) ||
+        (item.phone.toLowerCase() === query) ||
+        (item.email.toLowerCase() === query)
+      });
+    }
+
+    this.setState({data: filteredData});
   }
 
-  // handleFilter = (query) =>{
-  //   this.setState({searchQuery: query});
-  // }
+  handleSearchOnChange = ({target: {value}}) => {
+    console.log(value);
+    this.setState({searchQuery: value});
+  }
+
+  handleUserChoise = (choisedUser) => {
+    this.setState({choisedUser});
+  }
+
 
   render(){
-    const { isSizeSelected, isLoading, selectValue, data, sortType, sortRow} = this.state;
+    const { 
+            isSizeSelected, 
+            isLoading, 
+            selectValue, 
+            data, 
+            sortType, 
+            sortRow, 
+            choisedUser, 
+            searchQuery 
+          } = this.state;
     
     if(!isSizeSelected){
       return (
@@ -98,18 +137,28 @@ class App extends Component {
     
     return (
       <>
-        {isLoading ? 
+        {
+          isLoading ? 
           <Loader/> :
           <>
-            <SearchFilter handleFilter={this.handleFilter} />
+            <SearchFilter 
+              handleSearchOnChange={this.handleSearchOnChange} 
+              handleSearchOnClick={this.handleSearchOnClick}
+              searchQuery={searchQuery}
+            />
             <Table 
               data={data} 
               sortType={sortType} 
               sortRow={sortRow} 
               handleSort={this.handleSort} 
-              showColumnData={this.showColumnData}
+              handleUserChoise={this.handleUserChoise}
             />
           </>
+        }
+        {
+          choisedUser ?
+          <UserInfo choisedUser={choisedUser} /> : 
+          null
         }
       </>
     );

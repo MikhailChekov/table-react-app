@@ -3,16 +3,17 @@ import PropTypes from 'prop-types';
 import {FormControl, Button, InputGroup} from 'react-bootstrap';
 
 
-const SearchFilter = ({ handleFilter, value }) => (
+const SearchFilter = ({ searchQuery, handleSearchOnChange, handleSearchOnClick}) => (
     <InputGroup className="mb-3">
         <FormControl
             placeholder="Поиск по таблице"
             aria-label="Поиск по таблице"
             aria-describedby="search"
-            defaultValue={value}
+            defaultValue={searchQuery}
+            onChange={handleSearchOnChange}
         />
         <InputGroup.Append  >
-        <Button onClick={handleFilter} variant="outline-secondary">Поиск</Button>
+            <Button onClick={handleSearchOnClick} variant="outline-secondary">Поиск</Button>
         </InputGroup.Append>
     </InputGroup>
 );

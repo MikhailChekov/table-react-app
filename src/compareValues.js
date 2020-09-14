@@ -1,3 +1,5 @@
+// higher order function for sorting
+
 export default function compareValues(key, order = 'asc') {
     return function innerSort(a, b) {
       if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {

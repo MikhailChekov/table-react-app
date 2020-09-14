@@ -2,7 +2,7 @@ import React from 'react';
 import { Table as BootstrapTable } from 'react-bootstrap';
 import './table.css';
 
-const Table = ( {data, handleSort, sortType, sortRow, showColumnData} ) => {
+const Table = ( {data, handleSort, sortType, sortRow, handleUserChoise} ) => {
 
     return (
         <BootstrapTable striped bordered hover variant="dark" size="sm">
@@ -32,7 +32,7 @@ const Table = ( {data, handleSort, sortType, sortRow, showColumnData} ) => {
             </thead>
             <tbody>
                 {data.map(i => (
-                    <tr key={i.id + Math.random()} onClick={()=>{showColumnData(i)}}>
+                    <tr key={i.id + Math.random()} onClick={()=>{handleUserChoise(i)}}>
                         <td>{i.id}</td>
                         <td>{i.firstName}</td>
                         <td>{i.lastName}</td>
