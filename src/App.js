@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import ReactPaginate from 'react-paginate';
 import Table from './components/Table/Table';
 import Loader from './components/Loader';
 import SearchFilter from './components/SearchFilter';
@@ -10,7 +11,7 @@ import compareValues from './compareValues';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { LONG_REQ, SHORT_REQ, SELECT_OPT } from './constants.js';
+import { LONG_REQ, SHORT_REQ, PAGE_SIZE } from './constants.js';
 
 
 class App extends Component {
@@ -19,10 +20,9 @@ class App extends Component {
     isSizeSelected: false,
     choisedUser: null,
     searchQuery: '',
-    selectedSize: 'short',
     sortType: 'disabled',
     sortRow: '',
-    
+    currentPage: 0,
     data: [],
   };
   
@@ -61,12 +61,10 @@ class App extends Component {
     this.setState({data, sortType, sortRow});
   }
 
-  handleSelectOnSubmit = (e) => {
-    const { selectedSize } = this.state;
-    e.preventDefault();
+  handleSelectOnClick = (value, e) => {
     this.setState({isSizeSelected: true, isLoading: true});
 
-    switch(selectedSize){
+    switch(value){
       case 'short': 
         this.fetchData(SHORT_REQ);
         break;
@@ -78,60 +76,79 @@ class App extends Component {
     }
   }
 
-  handleSelectOnChange = ({target: {value}}) => {
-    this.setState({selectedSize: value});
-  }
-
-  // TODO:
-  handleSearchOnClick = () =>{
-
-    if(this.state.searchQuery !== ''){
-      const data = this.state.data.concat();
-      const { searchQuery } = this.state;
-      data.filter((item) => {
-        let query = searchQuery.toLowerCase();
-
-        return (item.id === query) || 
-        (item.firstName.toLowerCase() === query) ||
-        (item.lastName.toLowerCase() === query) ||
-        (item.phone.toLowerCase() === query) ||
-        (item.email.toLowerCase() === query)
-      });
-    }
-
-    this.setState({data: filteredData});
-  }
-
-  handleSearchOnChange = ({target: {value}}) => {
-    console.log(value);
-    this.setState({searchQuery: value});
+  handleSearchOnClick = (value) => {
+    this.setState({ searchQuery: value});
   }
 
   handleUserChoise = (choisedUser) => {
     this.setState({choisedUser});
   }
 
+  handlePageClick = ({selected}) => {
+    this.setState({currentPage: selected});
+  }
+
+  dataPageFilter = (data, size) => {
+
+    const newData = data.reduce((p,c)=>{
+      if(p[p.length-1].length === size){
+        p.push([]);
+      }
+      
+      p[p.length-1].push(c);
+      return p;
+    }, [[]]);
+
+    return newData;
+ 
+  }
+
+  dataSearchFilter = (data) =>{
+
+    const { searchQuery } = this.state;
+
+    if(searchQuery.length > 0){
+
+      const filteredData = data.filter((item) => {
+        let query = searchQuery.toString().toLowerCase();
+
+         return item.id.toString().includes(query) ||
+        item.firstName.toLowerCase().includes(query) ||
+        item.lastName.toLowerCase().includes(query) ||
+        item.phone.toLowerCase().includes(query) ||
+        item.email.toLowerCase().includes(query) 
+      });
+
+      return filteredData;
+    }else{
+      return data;
+    }
+  }
 
   render(){
     const { 
             isSizeSelected, 
             isLoading, 
-            selectValue, 
             data, 
             sortType, 
             sortRow, 
-            choisedUser, 
-            searchQuery 
+            choisedUser,
+            currentPage,
           } = this.state;
+
+    
+    // apply search
+    const searchAppliedData = this.dataSearchFilter(data);
+    
+    const pageCount = searchAppliedData.length / PAGE_SIZE;
+
+    // apply paging
+    const pagingAppliedData = this.dataPageFilter(searchAppliedData, PAGE_SIZE)[currentPage];
+
     
     if(!isSizeSelected){
       return (
-        <SizeSelector 
-          options={SELECT_OPT} 
-          handleSelectOnSubmit={this.handleSelectOnSubmit} 
-          handleSelectOnChange={this.handleSelectOnChange}
-          selectValue={selectValue}
-        />
+        <SizeSelector handleSelectOnClick={this.handleSelectOnClick} />
       );
     }
     
@@ -141,19 +158,38 @@ class App extends Component {
           isLoading ? 
           <Loader/> :
           <>
-            <SearchFilter 
-              handleSearchOnChange={this.handleSearchOnChange} 
-              handleSearchOnClick={this.handleSearchOnClick}
-              searchQuery={searchQuery}
-            />
+            <SearchFilter handleSearchOnClick={this.handleSearchOnClick} />
             <Table 
-              data={data} 
+              data={pagingAppliedData} 
               sortType={sortType} 
               sortRow={sortRow} 
               handleSort={this.handleSort} 
               handleUserChoise={this.handleUserChoise}
             />
           </>
+        }
+        {
+          searchAppliedData.length > PAGE_SIZE ?
+          <ReactPaginate
+            previousLabel={'<'}
+            nextLabel={'>'}
+            breakLabel={'...'}
+            breakClassName={'break-me'}
+            pageCount={pageCount}
+            forcePage={currentPage}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={this.handlePageClick}
+            containerClassName={'pagination justify-content-center'}
+            activeClassName={'active'}
+            pageClassName={'page-item'}
+            pageLinkClassName={'page-link'}
+            previousClassName={'page-item'}
+            nextClassName={'page-item'}
+            previousLinkClassName={'page-link'}
+            nextLinkClassName={'page-link'}
+          /> :
+          null
         }
         {
           choisedUser ?
