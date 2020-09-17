@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {Card, Form} from 'react-bootstrap';
  
-export default ({choisedUser})=>{
+const UserInfo = ({choisedUser}) => {
     return(
         <>
             <Card
@@ -25,3 +26,19 @@ export default ({choisedUser})=>{
         </>
     );
 };
+
+UserInfo.propTypes = {
+        choisedUser: PropTypes.shape({
+            id: PropTypes.number,
+            firstName: PropTypes.string,
+            lastName: PropTypes.string,
+            phone: PropTypes.string,
+            email: PropTypes.string,
+            description: PropTypes.string,
+            address: PropTypes.objectOf(PropTypes.string),
+    }).isRequired,
+}
+  
+UserInfo.defaultProps = { }
+
+export default UserInfo;

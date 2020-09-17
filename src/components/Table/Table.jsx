@@ -1,8 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Table as BootstrapTable } from 'react-bootstrap';
 import './table.css';
 
-const Table = ( {data, handleSort, sortType, sortRow, handleUserChoise} ) => {
+const Table = ( {data, handleSort, sortType, sortRow, handleUserShow} ) => {
 
     return (
         <BootstrapTable striped bordered hover variant="dark" size="sm">
@@ -32,7 +33,7 @@ const Table = ( {data, handleSort, sortType, sortRow, handleUserChoise} ) => {
             </thead>
             <tbody>
                 {data.map(i => (
-                    <tr key={i.id + Math.random()} onClick={()=>{handleUserChoise(i)}}>
+                    <tr key={i.id + Math.random()} onClick={()=>{handleUserShow(i)}}>
                         <td>{i.id}</td>
                         <td>{i.firstName}</td>
                         <td>{i.lastName}</td>
@@ -44,4 +45,28 @@ const Table = ( {data, handleSort, sortType, sortRow, handleUserChoise} ) => {
         </BootstrapTable>
     );
 }
+
+Table.propTypes = {
+    data: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.number,
+            firstName: PropTypes.string,
+            lastName: PropTypes.string,
+            email: PropTypes.string,
+            phone: PropTypes.string
+        }).isRequired
+    ),
+    handleUserShow:PropTypes.func,
+    handleSort: PropTypes.func,
+    sortType: PropTypes.string,
+    sortRow: PropTypes.string
+}
+
+Table.defaultProps = {
+    handleUserShow: () => {},
+    handleSort: () => {},
+    sortType: '',
+    sortRow: '',
+}
+
 export default Table;

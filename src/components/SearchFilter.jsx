@@ -12,29 +12,27 @@ const SearchFilter = ({ handleSearchOnClick}) => {
     return(
         <>
             <InputGroup className="mb-3">
-            <FormControl
-                placeholder="Поиск по таблице"
-                aria-label="Поиск по таблице"
-                aria-describedby="search"
-                defaultValue={searchValue}
-                onChange={handleSearchOnChange}
-            />
-            <InputGroup.Append  >
-                <Button onClick={()=> { handleSearchOnClick(searchValue) } } variant="outline-secondary">Поиск</Button>
-            </InputGroup.Append>
+                <FormControl
+                    placeholder="Поиск по таблице"
+                    aria-label="Поиск по таблице"
+                    aria-describedby="search"
+                    defaultValue={searchValue}
+                    onChange={handleSearchOnChange}
+                />
+                <InputGroup.Append  >
+                    <Button onClick={()=> { handleSearchOnClick(searchValue) } } variant="outline-secondary">Поиск</Button>
+                </InputGroup.Append>
             </InputGroup>
         </>
     );
 }
 
 SearchFilter.propTypes = {
-    handleFilter: PropTypes.func,
-    value: PropTypes.string,
+    handleSearchOnClick: PropTypes.func,
 }
 
 SearchFilter.defaultProps = {
-    handleFilter: () => {},
-    value: '',
+    handleSearchOnClick: () => {},
 }
 
 export default SearchFilter;
