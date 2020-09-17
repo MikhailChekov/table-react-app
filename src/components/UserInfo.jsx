@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Card, Form} from 'react-bootstrap';
  
-const UserInfo = ({choisedUser}) => {
+const UserInfo = ({choisedUser = []}) => {
     return(
         <>
             <Card

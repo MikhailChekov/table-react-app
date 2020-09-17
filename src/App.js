@@ -134,8 +134,20 @@ class App extends Component {
   }
 
   handleAddNewUser = (user) => {
+
     const data = this.state.data.concat();
     user.id = Number(user.id);
+    if(typeof user.description === "undefined"){
+      user.description = '';
+    };
+    if(typeof user.address === "undefined"){
+      user.address = {
+        streetAddress: '',
+        city: '',
+        state: '',
+        zip: ''
+      }
+    };
     data.unshift(user);
     this.setState({data: data, isUserAddStart: false});
   }
