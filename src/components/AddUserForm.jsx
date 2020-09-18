@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Container, Row,  Col, Form, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const AddUserForm = ({ showUserAddFormToggle, handleAddNewUser}) => {
+const AddUserForm = ({ showUserAddFormToggle, handleAddNewUser }) => {
 
     const [formFields, setFormFields] = useState({
         id: '',
@@ -21,6 +21,7 @@ const AddUserForm = ({ showUserAddFormToggle, handleAddNewUser}) => {
         email: ''
     });
 
+    // template looks * @ *
     const emailRegex = RegExp(
         /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
     );
@@ -51,30 +52,22 @@ const AddUserForm = ({ showUserAddFormToggle, handleAddNewUser}) => {
         const {name, value} = target;
     
         let errors = { ...formErrors };
-
+    
         switch (name) {
             case "firstName":
-                errors.firstName =
-                value.length <= 1 ? "Необходимо минимум 2 символа" : "";
+                errors.firstName = value.length <= 1 ? "Необходимо минимум 2 символа" : "";
                 break;
             case "lastName":
-                errors.lastName = 
-                value.length <= 1 ? "Необходимо минимум 2 символа" : "";
+                errors.lastName =  value.length <= 1 ? "Необходимо минимум 2 символа" : "";
                 break;
             case "email":
-                errors.email = emailRegex.test(value)
-                ? ""
-                : "Email должен быть вида: '* @ *'";
+                errors.email = emailRegex.test(value) ? "" : "Email должен быть вида: '* @ *'";
                 break;
             case "phone":
-                errors.phone = phoneRegex.test(value) 
-                 ? "" 
-                 : "Необходимо минимум 5 символов вида: 0-9 +";
+                errors.phone = phoneRegex.test(value)  ? "" : "Необходимо минимум 5 символов вида: 0-9 +";
                  break;
             case "id":
-                errors.id = idRegex.test(value) 
-                ?  "" 
-                : "Id должен состоять из цифр";
+                errors.id = idRegex.test(value)  ?  ""  : "Id должен состоять из цифр";
                 break;
             default:
                 break;
@@ -106,13 +99,13 @@ const AddUserForm = ({ showUserAddFormToggle, handleAddNewUser}) => {
                                     required
                                     initialvalue={formFields.firstName}
                                     name="firstName"
-                                    className={formErrors.firstName.length > 0 ? " is-invalid" : ""}
+                                    className={formErrors.firstName ? " is-invalid" : ""}
                                     type="text" 
                                     placeholder="Введите имя" 
-                                    onChange={(e)=> { changeHandler(e)}}
+                                    onChange={(e) => { changeHandler(e) }}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                    {formErrors.name}
+                                    {formErrors.firstName}
                                 </Form.Control.Feedback>
                             </Form.Group>
                             {/* Surname */}
@@ -120,12 +113,11 @@ const AddUserForm = ({ showUserAddFormToggle, handleAddNewUser}) => {
                                 <Form.Label>Фамилия</Form.Label>
                                 <Form.Control
                                     required
-                                    initialvalue={formFields.lastName}
                                     type="text"
                                     name="lastName"
-                                    className={formErrors.lastName.length > 0 ? " is-invalid" : ""}
+                                    className={formErrors.lastName ? " is-invalid" : ""}
                                     placeholder="Введите фамилию" 
-                                    onChange={(e)=> { changeHandler(e)}}
+                                    onChange={(e) => { changeHandler(e) }}
                                 />
                                 <Form.Control.Feedback type="invalid">
                                     {formErrors.lastName}
@@ -136,12 +128,11 @@ const AddUserForm = ({ showUserAddFormToggle, handleAddNewUser}) => {
                                 <Form.Label>Id</Form.Label>
                                 <Form.Control 
                                     required
-                                    initialvalue={formFields.id}
                                     name="id"
-                                    className={formErrors.id.length > 0 ? " is-invalid" : ""}
+                                    className={formErrors.id ? " is-invalid" : ""}
                                     type="text" 
                                     placeholder="Введите Id"
-                                    onChange={(e)=> { changeHandler(e)}}
+                                    onChange={(e) => { changeHandler(e) }}
                                 />
                                 <Form.Control.Feedback type="invalid">
                                     {formErrors.id}
@@ -154,12 +145,11 @@ const AddUserForm = ({ showUserAddFormToggle, handleAddNewUser}) => {
                                 <Form.Label>Email</Form.Label>
                                 <Form.Control
                                     required
-                                    initialvalue={formFields.email}
                                     name="email"
-                                    className={formErrors.email.length > 0 ? " is-invalid" : ""}
+                                    className={formErrors.email ? " is-invalid" : ""}
                                     type="email" 
                                     placeholder="Введите email"
-                                    onChange={(e)=> { changeHandler(e)}}
+                                    onChange={(e) => { changeHandler(e) }}
                                 />
                                 <Form.Control.Feedback type="invalid">
                                     {formErrors.email}
@@ -170,12 +160,11 @@ const AddUserForm = ({ showUserAddFormToggle, handleAddNewUser}) => {
                                 <Form.Label>Телефон</Form.Label>
                                 <Form.Control
                                     required
-                                    initialvalue={formFields.phone}
                                     name="phone"
-                                    className={formErrors.phone.length > 0 ? " is-invalid" : ""}
+                                    className={formErrors.phone ? " is-invalid" : ""}
                                     type="text" 
                                     placeholder="Введите телефон"
-                                    onChange={(e)=> { changeHandler(e)}}
+                                    onChange={(e) => { changeHandler(e) }}
                                 />
                                 <Form.Control.Feedback type="invalid">
                                     {formErrors.phone}

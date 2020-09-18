@@ -18,7 +18,7 @@ const SizeSelector = ({ handleSelectOnClick}) => {
                     <Form className="text-center">
                         <Form.Group>
                             <Form.Label>Выберите объем данных:</Form.Label>
-                            <Form.Control className="mx-auto" size="sm" onChange={handleSelectOnChange} defaultValue={selectedSize} as="select"  >
+                            <Form.Control className="mx-auto" size="sm" onChange={handleSelectOnChange} defaultValue={selectedSize} as="select" >
                                 {SELECT_OPT.map(({value, label} ,i ) =>
                                     <option key={i} value={value}>{label}</option>
                                 )}

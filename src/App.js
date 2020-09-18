@@ -44,6 +44,7 @@ class App extends Component {
      }
      catch(e){
       console.log(`Error! ${e}`);
+      
      }
   }
 
@@ -54,15 +55,16 @@ class App extends Component {
     let sortType = '';
     
     // sort should start with 'asc' for new row
-    if(lastSortRow !== sortRow){
+    if(lastSortRow !== sortRow) {
       sortType = 'asc';
-    }else{
+    }else {
       sortType = this.state.sortType ===  'asc' ? 'desc' : 'asc';
     }
     // use external function for sorting
     data.sort(compareValues(sortRow, sortType));
 
     this.setState({data, sortType, sortRow});
+      
   }
 
   handleSelectOnClick = (value, e) => {
@@ -81,17 +83,17 @@ class App extends Component {
   }
 
   handleSearchOnClick = (value) => {
-    this.setState({ searchQuery: value});
+    this.setState({ searchQuery: value, currentPage: 0});
   }
 
   handleUserShow = (choisedUser) => {
-    this.setState({choisedUser});
+    this.setState({ choisedUser });
   }
 
-  handlePageClick = ({selected}) => {
+  handlePageClick = ({ selected }) => {
     this.setState({currentPage: selected});
   }
-
+  // separate data to small arrays for paging (1 array for page)
   dataPageFilter = (data, size) => {
 
     const newData = data.reduce((p,c)=>{
@@ -111,16 +113,18 @@ class App extends Component {
 
     const { searchQuery } = this.state;
 
-    if(searchQuery.length > 0){
+    if(searchQuery){
 
       const filteredData = data.filter((item) => {
         let query = searchQuery.toString().toLowerCase();
-
-         return item.id.toString().includes(query) ||
-        item.firstName.toLowerCase().includes(query) ||
-        item.lastName.toLowerCase().includes(query) ||
-        item.phone.toLowerCase().includes(query) ||
-        item.email.toLowerCase().includes(query) 
+        
+        return (
+         item.id.toString().includes(query) ||
+         item.firstName.toLowerCase().includes(query) ||
+         item.lastName.toLowerCase().includes(query) ||
+         item.phone.toLowerCase().includes(query) ||
+         item.email.toLowerCase().includes(query) );
+        
       });
 
       return filteredData;
@@ -137,10 +141,9 @@ class App extends Component {
 
     const data = this.state.data.concat();
     user.id = Number(user.id);
-    if(typeof user.description === "undefined"){
-      user.description = '';
-    };
-    if(typeof user.address === "undefined"){
+    user.description = user.description || '';
+    
+    if(!user.address){
       user.address = {
         streetAddress: '',
         city: '',
@@ -168,7 +171,7 @@ class App extends Component {
     // apply search
     const searchAppliedData = this.dataSearchFilter(data);
     
-    const pageCount = searchAppliedData.length / PAGE_SIZE;
+    const pageCount = Math.ceil(searchAppliedData.length / PAGE_SIZE);
 
     // apply paging
     const pagingAppliedData = this.dataPageFilter(searchAppliedData, PAGE_SIZE)[currentPage];
