@@ -117,7 +117,7 @@ class App extends Component {
 
       const filteredData = data.filter((item) => {
         let query = searchQuery.toString().toLowerCase();
-        
+
         return (
          item.id.toString().includes(query) ||
          item.firstName.toLowerCase().includes(query) ||
@@ -204,7 +204,7 @@ class App extends Component {
                     <SearchFilter handleSearchOnClick={this.handleSearchOnClick} />
                   </Col>
                   <Col lg={6} md={4} className="text-center mb-3">
-                    <Button variant="info" onClick={ ()=> { this.showUserAddFormToggle()}}>Добавить пользователя</Button>
+                    <Button variant="info" onClick={ ()=> { this.showUserAddFormToggle() }}>Добавить пользователя</Button>
                   </Col>
                   <Col lg={12} md={12}>
                     <Table 
@@ -259,4 +259,3 @@ class App extends Component {
 }
 
 export default App;
-
