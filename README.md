@@ -1,4 +1,4 @@
-# Classic snake game
+# React table app
 
 ## [Demo](https://mikhailchekov.github.io/table-react-app/)
 

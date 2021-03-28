@@ -34,8 +34,9 @@ class App extends Component {
         const response = await fetch(
           searchQuery, {
             method: 'GET',
+            mode: 'cors',
             headers:{
-              'X-Requested-With': 'XMLHttpRequest'
+              'Content-Type': 'application/json'
             }
           });
         const data = await response.json();
