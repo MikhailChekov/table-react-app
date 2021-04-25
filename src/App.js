@@ -30,23 +30,21 @@ class App extends Component {
   };
   
   async fetchData (searchQuery) {
-     try{
-        const response = await fetch(
-          searchQuery, {
-            method: 'GET',
-            mode: 'cors',
-            headers:{
-              'Content-Type': 'application/json'
-            }
-          });
-        const data = await response.json();
 
-        this.setState({data: data, isLoading: false});
-     }
-     catch(e){
-      console.log(`Error! ${e}`);
-      
-     }
+    fetch(searchQuery, {
+      headers: {
+        origin : ""
+      }
+    })
+    .then(res => res.json())
+    .then(json =>  {
+      const data = json;
+      this.setState({data: data, isLoading: false});
+    })
+    .catch(rej => {
+        throw new Error(`Error - ${rej}`);
+    })
+
   }
 
   handleSort = (sortRow) => {
